@@ -1,0 +1,20 @@
+{
+  "name": "sudoku_verifier",
+  "version": "1.0.0",
+  "description": "Library to perform verification of sudoku-type puzzles",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "Aric Parkinson",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jest": "^25.2.3",
+    "jest": "^26.0.1",
+    "ts-jest": "^26.0.0",
+    "typescript": "^3.9.3"
+  }
+}

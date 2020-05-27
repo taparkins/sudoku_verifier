@@ -1,0 +1,20 @@
+{
+    "compilerOptions": {
+        "module": "system",
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "outFile": "bin/bundle.js",
+        "sourceMap": true,
+        "target": "ES6",
+    },
+
+    "include": [
+        "src/**/*.ts",
+    ],
+
+    "exclude": [
+        "node_modules",
+        "tests/**/*",
+    ]
+}
