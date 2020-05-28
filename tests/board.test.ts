@@ -1,4 +1,5 @@
-import { Board, Position } from "../src/board";
+import { Position } from "../src/geometry";
+import { Board } from "../src/board";
 
 function expectArraySameIgnoringOrder(a1: any[], a2: any[]): void {
     expect(a1).toEqual(expect.arrayContaining(a2));

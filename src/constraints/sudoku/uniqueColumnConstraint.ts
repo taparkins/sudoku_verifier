@@ -1,4 +1,5 @@
-import { Board, Position } from "../../board";
+import { Position } from "../../geometry";
+import { Board } from "../../board";
 import { UniqueValueConstraint } from "../uniqueValueConstraint";
 import { AndConstraint } from "../andConstraint";
 import { Constraint } from "../constraint";

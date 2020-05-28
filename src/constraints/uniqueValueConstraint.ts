@@ -1,5 +1,6 @@
 import { Constraint } from "./constraint";
-import { Board, Position } from "../board";
+import { Position } from "../geometry";
+import { Board } from "../board";
 
 /**
  * Represents a generic constraint that confirms the values of every cell

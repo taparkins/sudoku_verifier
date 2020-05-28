@@ -1,4 +1,4 @@
-export type Position = [number, number];
+import { Position } from './geometry';
 
 export class Board {
     public cells: number[][];

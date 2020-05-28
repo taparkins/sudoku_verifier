@@ -1,4 +1,5 @@
-import { Board, Position } from "../../src/board";
+import { Position } from "../../src/geometry";
+import { Board } from "../../src/board";
 import { UniqueValueConstraint } from "../../src/constraints/uniqueValueConstraint";
 
 describe('UniqueValueConstraint.test()', () => {
