@@ -23,6 +23,15 @@ export enum Direction {
 }
 
 /**
+ * Represents a horizontal or vertical orientation for an object
+ * in a grid.
+ */
+export enum Orientation {
+    Horizontal,
+    Vertical,
+}
+
+/**
  * Converts a Direction enum value into a Movement vector.
  * 
  * @param direction Direction enum value to convert.

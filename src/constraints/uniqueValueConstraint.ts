@@ -15,7 +15,7 @@ export abstract class UniqueValueConstraint implements Constraint {
      */
     public abstract getTestRegion(board: Board): Position[];
 
-    test(board: Board): boolean {
+    public test(board: Board): boolean {
         let testRegion: Position[] = this.getTestRegion(board);
         let cellValues: number[] = board.getValuesForRegion(testRegion);
         let uniqueValues: Set<number> = new Set<number>(cellValues);
