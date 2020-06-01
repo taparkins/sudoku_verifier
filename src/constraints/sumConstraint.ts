@@ -1,31 +1,23 @@
 import { Position } from "../geometry";
 import { Constraint } from "./constraint";
 import { Board } from "../board";
+import { RegionSpec } from "../regionSpecs/regionSpec";
 
 /**
  * Represents a generic constraint that enforces the values inside
- * a specified region of the board sum to an expected quantity. The
- * specific region will be defined by the subclass by implementing
- * the getTestRegion function.
+ * a region of the board sum to an expected quantity. The region will
+ * be obtained via a RegionSpec object run against the tested board.
  */
-export abstract class SumConstraint implements Constraint {
-    protected expectedSum: number;
-    constructor(expectedSum: number) {
+export class SumConstraint implements Constraint {
+    private regionSpec: RegionSpec;
+    private expectedSum: number;
+    constructor(regionSpec: RegionSpec, expectedSum: number) {
+        this.regionSpec = regionSpec;
         this.expectedSum = expectedSum;
     }
 
-    /**
-     * Returns a region of positions to test for the provided board.
-     * An undefined value can be returned to indicate the region was
-     * not able to be constructed due to the inputs of the board, so
-     * the constraint test should return false.
-     * 
-     * @param board Board that constraints are being tested against.
-     */
-    public abstract getTestRegion(board: Board): Position[] | undefined;
-
     public test(board: Board): boolean {
-        let testRegion = this.getTestRegion(board);
+        let testRegion = this.regionSpec.getRegion(board);
         if (testRegion === undefined) {
             return false;
         }

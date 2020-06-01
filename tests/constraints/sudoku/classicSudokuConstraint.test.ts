@@ -1,7 +1,232 @@
 import { Board } from "../../../src/board";
-import { getSudokuConstraint, getStandard9SudokuConstraint } from "../../../src/constraints/sudoku/classicSudokuConstraint";
+import { getSudokuConstraint, getStandard9SudokuConstraint, getBoardRowConstraint, getBoardColumnConstraint, getBoardBoxConstraint } from "../../../src/constraints/sudoku/classicSudokuConstraint";
 
-describe('Happy Path', () => {
+describe('getBoardRowConstraint', () => {
+    describe('Square board', () => {
+        test('Valid', () => {
+            let testBoard = new Board(3);
+            testBoard.cells = [
+                [1, 1, 1],
+                [2, 2, 2],
+                [3, 3, 3],
+            ];
+    
+            let constraint = getBoardRowConstraint(3);
+            expect(constraint.test(testBoard)).toBe(true);
+        });
+
+        test('Invalid', () => {
+            let testBoard = new Board(3);
+            testBoard.cells = [
+                [1, 1, 2],
+                [2, 2, 2],
+                [3, 3, 3],
+            ];
+    
+            let constraint = getBoardRowConstraint(3);
+            expect(constraint.test(testBoard)).toBe(false);
+        });
+    });
+    
+
+    describe('Tall board', () => {
+        test('Valid', () => {
+            let testBoard = new Board(2, 3);
+            testBoard.cells = [
+                [1, 1, 1],
+                [2, 2, 2],
+            ];
+
+            let constraint = getBoardRowConstraint(3);
+            expect(constraint.test(testBoard)).toBe(true);
+        });
+
+        test('Invalid', () => {
+            let testBoard = new Board(2, 3);
+            testBoard.cells = [
+                [1, 1, 1],
+                [1, 2, 2],
+            ];
+
+            let constraint = getBoardRowConstraint(3);
+            expect(constraint.test(testBoard)).toBe(false);
+        });
+    });
+
+    describe('Long board', () => {
+        test('Valid', () => {
+            let testBoard = new Board(3, 2);
+            testBoard.cells = [
+                [1, 1],
+                [2, 3],
+                [3, 2],
+            ];
+
+            let constraint = getBoardRowConstraint(2);
+            expect(constraint.test(testBoard)).toBe(true);
+        });
+
+        test('Invalid', () => {
+            let testBoard = new Board(3, 2);
+            testBoard.cells = [
+                [1, 1],
+                [1, 3],
+                [2, 2],
+            ];
+
+            let constraint = getBoardRowConstraint(2);
+            expect(constraint.test(testBoard)).toBe(false);
+        });
+    });
+});
+
+describe('getBoardColumnConstraint', () => {
+    describe('Square board', () => {
+        test('Valid', () => {
+            let testBoard = new Board(3);
+            testBoard.cells = [
+                [1, 2, 3],
+                [1, 2, 3],
+                [1, 2, 3],
+            ];
+    
+            let constraint = getBoardColumnConstraint(3);
+            expect(constraint.test(testBoard)).toBe(true);
+        });
+
+        test('Invalid', () => {
+            let testBoard = new Board(3);
+            testBoard.cells = [
+                [1, 2, 3],
+                [1, 2, 3],
+                [2, 2, 3],
+            ];
+    
+            let constraint = getBoardColumnConstraint(3);
+            expect(constraint.test(testBoard)).toBe(false);
+        });
+    });
+    
+
+    describe('Tall board', () => {
+        test('Valid', () => {
+            let testBoard = new Board(2, 3);
+            testBoard.cells = [
+                [1, 2, 3],
+                [1, 2, 3],
+            ];
+
+            let constraint = getBoardColumnConstraint(2);
+            expect(constraint.test(testBoard)).toBe(true);
+        });
+
+        test('Invalid', () => {
+            let testBoard = new Board(2, 3);
+            testBoard.cells = [
+                [1, 2, 3],
+                [1, 3, 3],
+            ];
+
+            let constraint = getBoardColumnConstraint(2);
+            expect(constraint.test(testBoard)).toBe(false);
+        });
+    });
+
+    describe('Long board', () => {
+        test('Valid', () => {
+            let testBoard = new Board(3, 2);
+            testBoard.cells = [
+                [1, 2],
+                [1, 2],
+                [1, 2],
+            ];
+
+            let constraint = getBoardColumnConstraint(2);
+            expect(constraint.test(testBoard)).toBe(true);
+        });
+
+        test('Invalid', () => {
+            let testBoard = new Board(3, 2);
+            testBoard.cells = [
+                [1, 2],
+                [1, 1],
+                [1, 2],
+            ];
+
+            let constraint = getBoardColumnConstraint(3);
+            expect(constraint.test(testBoard)).toBe(false);
+        });
+    });
+});
+
+describe('getBoardBoxConstraint()', () => {
+    describe('Error cases', () => {
+        test('BoxWidth does not divide Board Width', () => {
+            let testBoard = new Board(9);
+            expect(() => getBoardBoxConstraint(testBoard, 7, 3)).toThrow();
+        });
+        
+        test('BoxHeight does not divide Board Height', () => {
+            let testBoard = new Board(9);
+            expect(() => getBoardBoxConstraint(testBoard, 3, 7)).toThrow();
+        });
+    });
+
+    describe('Valid cases', () => {
+        test('4x4 -- Square boxes', () => {
+            let testBoard = new Board(4);
+            testBoard.cells = [
+                [1, 2,   1, 2],
+                [3, 4,   3, 4],
+    
+                [1, 2,   1, 2],
+                [3, 4,   3, 4],
+            ];
+
+            let constraint = getBoardBoxConstraint(testBoard, 2, 2);
+            expect(constraint.test(testBoard)).toBe(true);
+        });
+
+        test('6x6 -- Vertical boxes', () => {
+            let testBoard = new Board(6);
+            // I know these don't look vertical; that's because the orientation is transposed
+            // thanks to indexing rules.
+            testBoard.cells = [
+                [1, 2, 3,   1, 2, 3],
+                [4, 5, 6,   4, 5, 6],
+    
+                [1, 2, 3,   1, 2, 3],
+                [4, 5, 6,   4, 5, 6],
+
+                [1, 2, 3,   1, 2, 3],
+                [4, 5, 6,   4, 5, 6],
+            ];
+
+            let constraint = getBoardBoxConstraint(testBoard, 2, 3);
+            expect(constraint.test(testBoard)).toBe(true);
+        });
+
+        test('6x6 -- Horizontal boxes', () => {
+            let testBoard = new Board(6);
+            // I know these don't look horizontal; that's because the orientation is transposed
+            // thanks to indexing rules.
+            testBoard.cells = [
+                [1, 2,   1, 2,   1, 2],
+                [3, 4,   3, 4,   3, 4],
+                [5, 6,   5, 6,   5, 6],
+
+                [1, 2,   1, 2,   1, 2],
+                [3, 4,   3, 4,   3, 4],
+                [5, 6,   5, 6,   5, 6],
+            ];
+
+            let constraint = getBoardBoxConstraint(testBoard, 3, 2);
+            expect(constraint.test(testBoard)).toBe(true);
+        });
+    });
+});
+
+describe('getSudokuConstraint()', () => {
     describe('Valid Grids', () => {
         test('sample valid 9x9 sudoku', () => {
             let sampleBoard = new Board(9);

@@ -1,5 +1,6 @@
 import { Position } from "../../src/geometry";
 import { Board } from "../../src/board";
+import { RegionSpec } from "../../src/regionSpecs/regionSpec";
 import { UniqueValueConstraint } from "../../src/constraints/uniqueValueConstraint";
 
 describe('UniqueValueConstraint.test()', () => {
@@ -11,8 +12,8 @@ describe('UniqueValueConstraint.test()', () => {
                 [3, 4],
             ];
 
-            let constraint = new (class TestConstraint extends UniqueValueConstraint {
-                public getTestRegion(board: Board): Position[] {
+            let regionSpec = new (class TestRegionSpec implements RegionSpec {
+                public getRegion(board: Board): Position[] {
                     return [
                         [0, 0],
                         [0, 1],
@@ -21,6 +22,7 @@ describe('UniqueValueConstraint.test()', () => {
                     ];
                 }
             });
+            let constraint = new UniqueValueConstraint(regionSpec);
 
             expect(constraint.test(testBoard)).toBe(true);
         });
@@ -32,8 +34,8 @@ describe('UniqueValueConstraint.test()', () => {
                 [2, 1],
             ];
 
-            let constraint = new (class TestConstraint extends UniqueValueConstraint {
-                public getTestRegion(board: Board): Position[] {
+            let regionSpec = new (class TestRegionSpec implements RegionSpec {
+                public getRegion(board: Board): Position[] {
                     return [
                         [0, 0],
                         [0, 1],
@@ -42,6 +44,7 @@ describe('UniqueValueConstraint.test()', () => {
                     ];
                 }
             });
+            let constraint = new UniqueValueConstraint(regionSpec);
 
             expect(constraint.test(testBoard)).toBe(false);
         });
@@ -55,14 +58,15 @@ describe('UniqueValueConstraint.test()', () => {
                 [1, 1],
             ];
 
-            let constraint = new (class TestConstraint extends UniqueValueConstraint {
-                public getTestRegion(board: Board): Position[] {
+            let regionSpec = new (class TestRegionSpec implements RegionSpec {
+                public getRegion(board: Board): Position[] {
                     return [
                         [0, 1],
                         [1, 0],
                     ];
                 }
             });
+            let constraint = new UniqueValueConstraint(regionSpec);
 
             expect(constraint.test(testBoard)).toBe(true);
         });
@@ -74,14 +78,15 @@ describe('UniqueValueConstraint.test()', () => {
                 [1, 1],
             ];
 
-            let constraint = new (class TestConstraint extends UniqueValueConstraint {
-                public getTestRegion(board: Board): Position[] {
+            let regionSpec = new (class TestRegionSpec implements RegionSpec {
+                public getRegion(board: Board): Position[] {
                     return [
                         [1, 1],
                         [0, 0],
                     ];
                 }
             });
+            let constraint = new UniqueValueConstraint(regionSpec);
 
             expect(constraint.test(testBoard)).toBe(false);
         });

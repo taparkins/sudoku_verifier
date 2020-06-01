@@ -1,22 +1,24 @@
 import { Constraint } from "./constraint";
-import { Position } from "../geometry";
 import { Board } from "../board";
+import { RegionSpec } from "../regionSpecs/regionSpec";
 
 /**
  * Represents a generic constraint that confirms the values of every cell
- * inside a specified region of the board are unique. The specific region
- * is to be defined by the subclass via the getTestRegion function.
+ * inside a region of the board are unique. The region will be obtained
+ * via a RegionSpec run against the tested board.
  */
-export abstract class UniqueValueConstraint implements Constraint {
-    /**
-     * Returns a region of positions to test for the provided board.
-     * 
-     * @param board Board that constraints are being tested against.
-     */
-    public abstract getTestRegion(board: Board): Position[];
+export class UniqueValueConstraint implements Constraint {
+    private regionSpec: RegionSpec;
+    constructor(regionSpec: RegionSpec) {
+        this.regionSpec = regionSpec;
+    }
 
     public test(board: Board): boolean {
-        let testRegion: Position[] = this.getTestRegion(board);
+        let testRegion = this.regionSpec.getRegion(board);
+        if (testRegion === undefined) {
+            return false;
+        }
+
         let cellValues: number[] = board.getValuesForRegion(testRegion);
         let uniqueValues: Set<number> = new Set<number>(cellValues);
         return cellValues.length === uniqueValues.size;

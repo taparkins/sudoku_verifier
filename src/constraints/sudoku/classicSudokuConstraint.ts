@@ -1,9 +1,71 @@
 import { Board } from "../../board";
+import { Constraint } from "../constraint";
 import { AndConstraint } from "../andConstraint";
-import { getBoardColumnConstraint } from "./uniqueColumnConstraint";
-import { getBoardRowConstraint } from "./uniqueRowConstraint";
-import { getBoardBoxConstraint } from "./uniqueBoxConstraint";
 import { RangeConstraint } from "./rangeConstraint";
+import { UniqueValueConstraint } from "../uniqueValueConstraint";
+import { ColumnRegionSpec, RowRegionSpec } from "../../regionSpecs/linearRegionSpecs";
+import { BoxDimensions, BoxRegionSpec } from "../../regionSpecs/boxRegionSpec";
+
+/**
+ * Builds a unified constraint handling uniqueness for each column in a board.
+ * 
+ * @param width Number of columns in the board to be tested.
+ */
+export function getBoardColumnConstraint(width: number): Constraint {
+    let result: AndConstraint = new AndConstraint();
+    for (let x = 0; x < width; x++) {
+        let regionSpec = new ColumnRegionSpec(x);
+        result.addConstraint(new UniqueValueConstraint(regionSpec));
+    }
+    return result;
+}
+
+/**
+ * Builds a unified constraint handling uniqueness for each row in a board.
+ * 
+ * @param height Number of rows in the board to be tested.
+ */
+export function getBoardRowConstraint(height: number): Constraint {
+    let result: AndConstraint = new AndConstraint();
+    for (let y = 0; y < height; y++) {
+        let regionSpec = new RowRegionSpec(y);
+        result.addConstraint(new UniqueValueConstraint(regionSpec));
+    }
+    return result;
+}
+
+/**
+ * Builds a unified constraint handling uniqueness for each box of the provided dimensions
+ * that fit within the provided board.
+ * 
+ * NOTE: This function expects the regions to cover the entire board. If the width and height
+ * are not chosen such that the board is evenly tiled by boxes, the test will always fail. To
+ * prevent this, this function will throw an error if `boxWidth` does not divide `board.width`
+ * and likewise if `boxHeight` does not divide `board.height`.
+ * 
+ * @param board Board matching the size to be tested by the constraint.
+ * @param boxWidth Width of the individual boxes.
+ * @param boxHeight Height of the individual boxes.
+ */
+export function getBoardBoxConstraint(board: Board, boxWidth: number, boxHeight: number): Constraint {
+    if (board.width % boxWidth != 0) {
+        throw new Error(`Invalid boxWidth; must divide board.width. Provided board width: ${board.width}; Provided boxWidth: ${boxWidth}`);
+    }
+    if (board.height % boxHeight != 0) {
+        throw new Error(`Invalid boxHeight; must divide board.height. Provided board height: ${board.height}; Provided boxHeight: ${boxHeight}`);
+    }
+
+    let result = new AndConstraint();
+    for (let startX = 0; startX < board.width; startX += boxWidth) {
+        for (let startY = 0; startY < board.height; startY += boxHeight) {
+            let dim: BoxDimensions = new BoxDimensions(startX, startY, boxWidth, boxHeight);
+            let regionSpec = new BoxRegionSpec(dim);
+            result.addConstraint(new UniqueValueConstraint(regionSpec));
+        }
+    }
+
+    return result;
+}
 
 /**
  * Returns a constraint matching classic sudoku rules -- that is, each row, column, and box
