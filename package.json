@@ -7,7 +7,9 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "build": "tsc",
+    "prepack": "tsc"
   },
   "author": "Aric Parkinson",
   "license": "ISC",
